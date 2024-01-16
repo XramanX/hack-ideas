@@ -1,5 +1,6 @@
+"use client"
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import {
   collection,
   addDoc,
@@ -9,11 +10,15 @@ import {
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import ChallengesList from "./ChallengesList";
-import NavBar from "./NavBar";
-import AddChallengeModal from "./AddChallengeModal";
-
+import ChallengesList from "@/app/components/ChallengesList";
+import NavBar from "@/app/components/NavBar";
+import AddChallengeModal from "@/app/components/AddChallengeModal";
+import {  useSelector } from "react-redux";
+import { selectUser } from "@/app/store/userSlice";
+import { useRouter } from "next/navigation";
 const HomePage = () => {
+  const user = useSelector(selectUser);
+  const router = useRouter();
   const [challengesList, setChallengesList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newChallenge, setNewChallenge] = useState({
@@ -21,7 +26,11 @@ const HomePage = () => {
     description: "",
     tags: [],
   });
-
+  useEffect(() => {
+    if(!user.id) {
+      router.push("/signin");
+    }
+  }, [user]);
   const addChallenge = async (e) => {
     e.preventDefault();
     try {
@@ -31,15 +40,6 @@ const HomePage = () => {
         upvotes: 0,
       });
 
-      // setChallengesList((prevChallenges) => [
-      //   ...prevChallenges,
-      //   {
-      //     ...newChallenge,
-      //     id: newChallengeRef.id,
-      //     createdAt: new Date(),
-      //     upvotes: 0,
-      //   },
-      // ]);
 
       setNewChallenge({
         title: "",
@@ -54,16 +54,17 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    const items = query(collection(db, "challenges"));
-    const unsub = onSnapshot(items, (snapshot) => {
-      let itemArray = [];
-      snapshot.forEach((doc) => {
-        itemArray.push({ ...doc.data(), id: doc.id });
+    if(user.id){
+      const items = query(collection(db, "challenges"));
+      const unsub = onSnapshot(items, (snapshot) => {
+        let itemArray = [];
+        snapshot.forEach((doc) => {
+          itemArray.push({ ...doc.data(), id: doc.id });
+        });
+        setChallengesList(itemArray);
       });
-      console.log(itemArray);
-      setChallengesList(itemArray);
-    });
-    return () => unsub();
+      return () => unsub();
+    }
   }, []);
 
   const handleAddChallengeClick = () => {
@@ -86,7 +87,7 @@ const HomePage = () => {
     }
   };
   return (
-    <div>
+    <div className="p-10">
       <NavBar
         onAddChallengeClick={handleAddChallengeClick}
         title="Hack Ideas"

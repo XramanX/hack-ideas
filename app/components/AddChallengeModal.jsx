@@ -64,8 +64,8 @@ const AddChallengeModal = ({
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center text-black">
-      <div className="bg-white w-96 p-8 rounded-lg shadow-lg">
+    <div className="fixed inset-0 flex items-center justify-center ">
+      <div className="bg-gray-500 w-96 p-8 rounded-lg shadow-lg">
         <button
           className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
           onClick={onClose}
@@ -111,7 +111,7 @@ const AddChallengeModal = ({
                 type="text"
                 value={tagInput}
                 onChange={handleTagChange}
-                onBlur={handleTagAdd}
+                // onBlur={handleTagAdd}
                 onKeyDown={(e) => e.key === "Enter" && handleTagAdd()}
                 placeholder="Add tags..."
               />
