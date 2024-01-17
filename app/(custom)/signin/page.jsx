@@ -15,7 +15,7 @@ const SignIn = () => {
   const user = useSelector(selectUser);
 
   useEffect(() => {
-    if (user.id) {
+    if (user?.id) {
       router.push("/home");
     }
   }, [user]);
@@ -37,6 +37,8 @@ const SignIn = () => {
         } else {
           snapshot.forEach((doc) => {
             dispatch(setUser({ ...doc.data(), id: doc.id }));
+            localStorage.setItem("employeeId", employeeId);
+            localStorage.setItem("displayName", doc.data().displayName);
           });
         }
       });
