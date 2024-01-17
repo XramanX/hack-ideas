@@ -159,7 +159,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen p-10">
+    <div className="min-h-screen ">
       <NavBar
         onAddChallengeClick={handleAddChallengeClick}
         title="Hack Ideas"

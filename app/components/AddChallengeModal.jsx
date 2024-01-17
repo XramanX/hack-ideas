@@ -53,6 +53,10 @@ const AddChallengeModal = ({
       e.preventDefault();
     }
   };
+  const onCancel = () => {
+    setFormErrors({});
+    onClose();
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -75,9 +79,13 @@ const AddChallengeModal = ({
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
               type="text"
               value={newChallenge.title}
-              onChange={(e) =>
-                setNewChallenge({ ...newChallenge, title: e.target.value })
-              }
+              onChange={(e) => {
+                setNewChallenge({ ...newChallenge, title: e.target.value });
+                setFormErrors((prevErrors) => ({
+                  ...prevErrors,
+                  title: false,
+                }));
+              }}
             />
             {formErrors.title && (
               <p className="text-red-500">Please enter a title</p>
@@ -88,12 +96,16 @@ const AddChallengeModal = ({
             <textarea
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
               value={newChallenge.description}
-              onChange={(e) =>
+              onChange={(e) => {
                 setNewChallenge({
                   ...newChallenge,
                   description: e.target.value,
-                })
-              }
+                });
+                setFormErrors((prevErrors) => ({
+                  ...prevErrors,
+                  description: false,
+                }));
+              }}
             />
             {formErrors.description && (
               <p className="text-red-500">Please enter a description</p>
@@ -127,7 +139,7 @@ const AddChallengeModal = ({
             <button
               type="button"
               className="mr-2 px-4 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
-              onClick={onClose}
+              onClick={onCancel}
             >
               Cancel
             </button>

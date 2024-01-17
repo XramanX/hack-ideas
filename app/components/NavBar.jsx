@@ -36,9 +36,11 @@ const NavBar = ({ onAddChallengeClick, title, user }) => {
   };
 
   return (
-    <nav className="flex w-4/5 justify-content items-center fixed top-0 bg-gray-700 lg:w-full lg:bg-transparent z-50 p-2 lg:flex-row">
+    <nav className="flex sticky bg-black justify-between items-center top-0 z-50 p-4 lg:w-full lg:flex-row lg:p-4">
       <div className="left">
-        <h1 className="text-4xl  cursor-pointer p-2 font-bold">{title}</h1>
+        <h1 className="text-xl lg:text-4xl  cursor-pointer p-2 font-bold">
+          {title}
+        </h1>
       </div>
       <div className="right flex items-center">
         <button

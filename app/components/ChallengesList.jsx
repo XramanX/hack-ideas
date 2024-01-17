@@ -3,6 +3,7 @@ import { BiUpvote, BiSolidUpvote } from "react-icons/bi";
 import { Tag } from "./Tag";
 import { db } from "../firebase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
+
 const ChallengesList = ({ challenges, onVote, userId }) => {
   const calculateTimeDifference = (timestamp) => {
     const now = new Date();
@@ -25,6 +26,22 @@ const ChallengesList = ({ challenges, onVote, userId }) => {
     }
   };
 
+  const truncateDescription = (description, maxLength) => {
+    if (description.length > maxLength) {
+      return `${description.slice(0, maxLength)}...`;
+    }
+    return description;
+  };
+
+  const [showFullDescription, setShowFullDescription] = useState({});
+
+  const toggleDescription = (challengeId) => {
+    setShowFullDescription((prev) => ({
+      ...prev,
+      [challengeId]: !prev[challengeId],
+    }));
+  };
+
   return (
     <ul className="grid gap-3 grid-cols-1 lg:grid-cols-1 mt-5">
       {challenges.map((challenge) => (
@@ -32,14 +49,27 @@ const ChallengesList = ({ challenges, onVote, userId }) => {
           key={challenge.id}
           className="text-white p-4 rounded-md shadow-md border border-white"
         >
-          <p>{`@${challenge?.createdBy} ${calculateTimeDifference(
-            challenge?.createdAt
-          )}`}</p>
-          <h3 className=" text-xl sm:text-2xl font-semibold mb-2">
-            {challenge.title}
-          </h3>
+          <div className="flex w-full justify-between">
+            <p className="text-md font-bold">{`@${challenge?.createdBy}`}</p>
+            <p className="text-xs">
+              {calculateTimeDifference(challenge?.createdAt)}
+            </p>
+          </div>
+          <h3 className="text-xl font-semibold mb-2">{challenge.title}</h3>
 
-          <p className=" mb-2 text-base sm:text-lg">{challenge?.description}</p>
+          <p className="mb-2 text-base sm:text-lg">
+            {showFullDescription[challenge.id]
+              ? challenge?.description
+              : truncateDescription(challenge?.description, 100)}
+            {challenge?.description.length > 100 && (
+              <button
+                className="text-blue-500 hover:underline text-sm ml-2"
+                onClick={() => toggleDescription(challenge.id)}
+              >
+                {showFullDescription[challenge.id] ? "Show less" : "Show more"}
+              </button>
+            )}
+          </p>
 
           <p>
             {challenge?.tags?.map((tag) => (
